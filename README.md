@@ -1,50 +1,82 @@
-# Welcome to your Expo app 👋
+# 📘 Habit Tracker App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple and clean habit tracking application built with **Expo**, **React Native**, and **TypeScript**.  
+This app allows users to create habits, track daily progress, and view their history in an intuitive interface.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Features
 
-   ```bash
-   npm install
-   ```
+- Add, edit, and delete habits
+- Track daily progress
+- View habit history
+- Tab-based navigation (Expo Router)
+- Reusable UI components
+- Local storage using AsyncStorage
+- Clean folder structure
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 📂 Project Structure
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```txt
+habit-tracker-app/
+├── app/
+│   ├── (tabs)/
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx
+│   │   └── manage.tsx
+├── components/
+├── screens/
+├── navigation/
+├── storage/
+├── assets/
+└── ...
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🛠️ Tech Stack
 
-To learn more about developing your project with Expo, look at the following resources:
+- **Expo SDK 51**
+- **React Native**
+- **TypeScript**
+- **Expo Router**
+- **AsyncStorage**
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+## ▶️ Running the App
 
-Join our community of developers creating universal apps.
+### Install dependencies
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npm install
+```
+
+### Start the Expo development server
+
+```bash
+npx expo start
+```
+
+### Run on:
+
+- **Android** → press `a`
+- **iOS (Mac only)** → press `i`
+- **Web** → press `w`
+
+---
+
+## 📦 Build (EAS)
+
+```bash
+npx eas build --platform android
+npx eas build --platform ios
+```
+
+---
+
+## 📄 License
+
+This project is for educational and personal use.

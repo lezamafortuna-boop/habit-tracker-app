@@ -1,49 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { View } from 'react-native';
-import { loadHistory } from '../storage/history';
-import { loadHabits } from '../storage/habits';
+import { View, StyleSheet } from 'react-native';
+import ThemedText from './ThemedText';
 import { theme } from '../constants/theme';
-import ThemedText from '../components/ThemedText';
+import { loadHistory } from '../storage/history';
 
 export default function HistoryList() {
   const [history, setHistory] = useState({});
-  const [habits, setHabits] = useState([]);
 
   useEffect(() => {
     async function loadData() {
       const hist = await loadHistory();
-      const h = await loadHabits();
       setHistory(hist);
-      setHabits(h);
     }
     loadData();
   }, []);
 
-  function getHabitName(id) {
-    const habit = habits.find(h => h.id === id);
-    return habit ? habit.name : 'Unknown';
-  }
+  const dates = Object.keys(history).sort().reverse();
 
   return (
-    <View style={{ marginTop: theme.spacing.lg }}>
-      <ThemedText style={[theme.typography.title, { marginBottom: theme.spacing.md }]}>
-        History
-      </ThemedText>
+    <View style={styles.container}>
+      <ThemedText type="title">History</ThemedText>
 
-      {Object.keys(history)
-        .sort()
-        .reverse()
-        .map(date => (
-          <View key={date} style={{ marginBottom: theme.spacing.md }}>
-            <ThemedText style={[theme.typography.subtitle, { fontWeight: 'bold' }]}>
-              {date}
-            </ThemedText>
+      {dates.length === 0 && (
+        <ThemedText style={styles.empty}>No history yet</ThemedText>
+      )}
 
-            {history[date].map(id => (
-              <ThemedText key={id}>• {getHabitName(id)}</ThemedText>
-            ))}
-          </View>
-        ))}
+      {dates.map(date => (
+        <View key={date} style={styles.row}>
+          <ThemedText>{date}</ThemedText>
+          <ThemedText>{history[date].length} completed</ThemedText>
+        </View>
+      ))}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+  },
+  row: {
+    backgroundColor: theme.colors.card,
+    padding: 14,
+    borderRadius: 10,
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  empty: {
+    marginTop: 10,
+    opacity: 0.6,
+  },
+});

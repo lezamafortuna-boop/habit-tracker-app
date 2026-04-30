@@ -2,17 +2,27 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { theme } from '../constants/theme';
 
-export default function ThemedText({ style, children, ...props }) {
+export default function ThemedText({ children, type = 'default', style = {}, ...props }) {
   return (
-    <Text style={[styles.text, style]} {...props}>
+    <Text style={[styles[type], style]} {...props}>
       {children}
     </Text>
   );
 }
 
 const styles = StyleSheet.create({
-  text: {
+  default: {
+    fontSize: 16,
     color: theme.colors.text,
-    fontSize: theme.typography.body.fontSize,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: theme.colors.text,
+  },
+  link: {
+    fontSize: 16,
+    color: theme.colors.primary,
+    textDecorationLine: 'underline',
   },
 });

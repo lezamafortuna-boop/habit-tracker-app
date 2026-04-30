@@ -41,3 +41,34 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Expo additional
+.expo-shared/
+.expo/web-build/
+.expo/packager-info.json
+.expo/settings.json
+
+# Metro bundler cache
+.metro-cache/
+metro-cache/
+.cache/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# VS Code workspace
+.vscode/
+.history/
+
+# OS files (extra)
+Thumbs.db
+
+# Expo assets cache
+assets/*.png
+assets/*.jpg
+assets/*.jpeg
+assets/*.gif
+assets/*.svg
