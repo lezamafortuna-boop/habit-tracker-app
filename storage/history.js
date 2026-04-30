@@ -43,3 +43,26 @@ export async function toggleHabitForToday(habitId) {
   await saveHistory(newHistory);
   return newHistory;
 }
+
+export function calculateStreak(history, habitId) {
+  const dates = Object.keys(history).sort().reverse();
+  let streak = 0;
+
+  for (const date of dates) {
+    if (history[date].includes(habitId)) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+export function streakColor(streak) {
+  if (streak >= 7) return '#f5c542';     // gold
+  if (streak >= 3) return '#4da6ff';     // blue
+  if (streak >= 1) return '#4caf50';     // green
+  return '#999';                         // gray
+}
+

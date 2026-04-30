@@ -5,6 +5,7 @@ import ThemedText from './ThemedText';
 import { theme } from '../constants/theme';
 import { loadHabits } from '../storage/habits';
 import { loadHistory, toggleHabitForToday } from '../storage/history';
+import { calculateStreak } from '../storage/history'; // make sure this file exists
 
 export default function HabitList() {
   const [habits, setHabits] = useState([]);
@@ -36,18 +37,23 @@ export default function HabitList() {
         <ThemedText style={styles.empty}>No habits yet</ThemedText>
       )}
 
-      {habits.map(habit => (
-        <TouchableOpacity
-          key={habit.id}
-          style={styles.card}
-          onPress={() => handleToggle(habit.id)}
-        >
-          <HabitItem
-            name={habit.name}
-            completed={todaysHabits.includes(habit.id)}
-          />
-        </TouchableOpacity>
-      ))}
+      {habits.map(habit => {
+        const streak = calculateStreak(history, habit.id);
+
+        return (
+          <TouchableOpacity
+            key={habit.id}
+            style={styles.card}
+            onPress={() => handleToggle(habit.id)}
+          >
+            <HabitItem
+              name={habit.name}
+              completed={todaysHabits.includes(habit.id)}
+              streak={streak}
+            />
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 }
