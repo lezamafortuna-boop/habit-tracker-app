@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button } from 'react-native';
 import { addHabit } from '../storage/habits';
-import ThemedView from '../components/ThemedView';
-import ThemedText from '../components/ThemedText';
-import { theme } from '../constants/theme';
+import { useTheme } from '../context/ThemeContext';
 
 export default function AddHabitForm({ onHabitAdded }) {
   const [text, setText] = useState('');
+  const { theme } = useTheme();
 
   async function handleAdd() {
     if (!text.trim()) return;

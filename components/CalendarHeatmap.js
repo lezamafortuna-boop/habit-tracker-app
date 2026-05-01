@@ -1,10 +1,10 @@
-import React from "react";
 import { StyleSheet, View } from "react-native";
-import { theme } from "../constants/theme";
+import { useTheme } from "../context/ThemeContext";
 import ThemedText from "./ThemedText";
 
 export default function CalendarHeatmap({ history }) {
-  // Generate last 30 days
+  const { theme } = useTheme();
+
   const days = [...Array(30)]
     .map((_, i) => {
       const d = new Date();
@@ -13,19 +13,17 @@ export default function CalendarHeatmap({ history }) {
     })
     .reverse();
 
-  // Count completions per day
   const dayValues = days.map((date) => {
     const habits = history[date] || [];
     return habits.length;
   });
 
-  // Color scale
   function getColor(value) {
     if (value === 0) return theme.colors.card;
-    if (value === 1) return "#c6e48b";
-    if (value === 2) return "#7bc96f";
-    if (value === 3) return "#239a3b";
-    return "#196127"; // 4+ completions
+    if (value === 1) return theme.colors.heatmapLow;
+    if (value === 2) return theme.colors.heatmapMid;
+    if (value === 3) return theme.colors.heatmapHigh;
+    return theme.colors.heatmapMax;
   }
 
   return (
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    width: 210, // 7 columns * 30px
+    width: 210,
   },
   square: {
     width: 28,

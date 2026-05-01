@@ -5,7 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 export default function ThemedText({
   children,
   type = "default",
-  style,
+  style = undefined,
   ...props
 }) {
   const { theme } = useTheme();

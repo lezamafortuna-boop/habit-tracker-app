@@ -1,27 +1,27 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { theme } from "../constants/theme";
+import { View } from "react-native";
+import { useTheme } from "../context/ThemeContext";
 
 export default function ProgressBar({ progress }) {
+  const { theme } = useTheme();
+
   return (
-    <View style={styles.container}>
-      <View style={[styles.fill, { width: `${progress * 100}%` }]} />
+    <View
+      style={{
+        height: 12,
+        width: "100%",
+        backgroundColor: theme.colors.card,
+        borderRadius: theme.radius.md,
+        overflow: "hidden",
+        marginTop: theme.spacing.sm,
+      }}
+    >
+      <View
+        style={{
+          height: "100%",
+          width: `${progress * 100}%`,
+          backgroundColor: theme.colors.primary,
+        }}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    height: 12,
-    width: "100%",
-    backgroundColor: theme.colors.card,
-    borderRadius: 8,
-    overflow: "hidden",
-    marginTop: 10,
-  },
-  fill: {
-    height: "100%",
-    backgroundColor: theme.colors.primary,
-    borderRadius: 8,
-  },
-});

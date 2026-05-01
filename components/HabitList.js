@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { theme } from "../constants/theme";
+import { useTheme } from "../context/ThemeContext";
 import { loadHabits } from "../storage/habits";
 import { calculateStreak, toggleHabitForToday } from "../storage/history";
 import HabitItem from "./HabitItem";
@@ -9,6 +9,7 @@ import ThemedText from "./ThemedText";
 
 export default function HabitList({ history }) {
   const [habits, setHabits] = useState([]);
+  const { theme } = useTheme();
 
   useEffect(() => {
     async function loadData() {
@@ -22,8 +23,8 @@ export default function HabitList({ history }) {
   const todaysHabits = history[today] || [];
 
   async function handleToggle(id) {
-    const updatedHistory = await toggleHabitForToday(id);
-    // parent screen will reload history automatically
+    await toggleHabitForToday(id);
+    // parent screen reloads history
   }
 
   // Daily progress
@@ -77,7 +78,13 @@ export default function HabitList({ history }) {
         return (
           <TouchableOpacity
             key={habit.id}
-            style={styles.card}
+            style={[
+              styles.card,
+              {
+                backgroundColor: theme.colors.card,
+                borderColor: theme.colors.border,
+              },
+            ]}
             onPress={() => handleToggle(habit.id)}
           >
             <HabitItem
@@ -97,7 +104,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   card: {
-    backgroundColor: theme.colors.card,
     padding: 16,
     borderRadius: 12,
     marginTop: 10,
@@ -105,6 +111,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
+    borderWidth: 1,
   },
   empty: {
     marginTop: 10,
