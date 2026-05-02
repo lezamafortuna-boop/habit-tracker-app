@@ -1,10 +1,10 @@
 import { Tabs } from "expo-router";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-export default function TabLayout() {
+export default function TabsLayout() {
   return (
-    <Tabs>
-      <Tabs.Screen name="index" options={{ title: "Today & History" }} />
-      <Tabs.Screen name="manage" options={{ title: "Manage Habits" }} />
-    </Tabs>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Tabs screenOptions={{ headerShown: false }} />
+    </GestureHandlerRootView>
   );
 }

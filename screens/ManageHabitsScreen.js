@@ -5,31 +5,46 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+
+import DraggableFlatList from "react-native-draggable-flatlist";
+
 import AddHabitForm from "../components/AddHabitForm";
 import Screen from "../components/Screen";
 import Snackbar from "../components/Snackbar";
 import SwipeableRow from "../components/SwipeableRow";
 import ThemedText from "../components/ThemedText";
+
 import { useTheme } from "../context/ThemeContext";
-import { loadHabits, removeHabit } from "../storage/habits";
+import { loadHabits, removeHabit, saveHabits } from "../storage/habits";
+import { hasSeenSwipeHint, markSwipeHintSeen } from "../storage/hints";
 
 export default function ManageHabitsScreen() {
   const [habits, setHabits] = useState([]);
   const [snackbar, setSnackbar] = useState({ visible: false, habit: null });
+  const [showHint, setShowHint] = useState(false);
+
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    async function refresh() {
-      const h = await loadHabits();
-      setHabits(h);
+    async function init() {
+      const loaded = await loadHabits();
+      setHabits(loaded);
+
+      const seen = await hasSeenSwipeHint();
+      if (!seen) {
+        setShowHint(true);
+        setTimeout(() => {
+          setShowHint(false);
+          markSwipeHintSeen();
+        }, 4000);
+      }
     }
-    refresh();
+    init();
   }, []);
 
   async function handleDelete(id) {
@@ -57,13 +72,46 @@ export default function ManageHabitsScreen() {
     setSnackbar({ visible: false, habit: null });
   }
 
+  async function handleReorder({ data }) {
+    setHabits(data);
+    await saveHabits(data);
+  }
+
+  function renderItem({ item, drag, isActive }) {
+    return (
+      <SwipeableRow onDelete={() => confirmDelete(item)}>
+        <View
+          style={[
+            styles.row,
+            {
+              backgroundColor:
+                theme.mode === "light" ? "#fff" : theme.colors.card,
+              borderBottomColor: theme.colors.border,
+              paddingVertical: theme.spacing.md,
+            },
+          ]}
+        >
+          <ThemedText>{item.name}</ThemedText>
+
+          <TouchableOpacity onLongPress={drag}>
+            <Ionicons
+              name="reorder-three-outline"
+              size={28}
+              color={theme.colors.muted}
+            />
+          </TouchableOpacity>
+        </View>
+      </SwipeableRow>
+    );
+  }
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Screen>
+        <Screen scroll={false}>
           <View style={{ padding: theme.spacing.lg, flex: 1 }}>
             <TouchableOpacity
               onPress={toggleTheme}
@@ -76,6 +124,23 @@ export default function ManageHabitsScreen() {
 
             <AddHabitForm onHabitAdded={setHabits} />
 
+            {showHint && (
+              <View
+                style={{
+                  backgroundColor: theme.colors.card,
+                  padding: theme.spacing.md,
+                  borderRadius: 8,
+                  marginVertical: theme.spacing.md,
+                  borderWidth: 1,
+                  borderColor: theme.colors.border,
+                }}
+              >
+                <ThemedText style={{ textAlign: "center" }}>
+                  Tip: Swipe left to delete. Long‑press the ≡ icon to reorder.
+                </ThemedText>
+              </View>
+            )}
+
             <ThemedText
               type="title"
               style={{ marginVertical: theme.spacing.md }}
@@ -83,32 +148,13 @@ export default function ManageHabitsScreen() {
               Your Habits
             </ThemedText>
 
-            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-              {habits.map((habit) => (
-                <SwipeableRow
-                  key={habit.id}
-                  onDelete={() => confirmDelete(habit)}
-                >
-                  <View
-                    style={[
-                      styles.row,
-                      {
-                        borderBottomColor: theme.colors.border,
-                        paddingVertical: theme.spacing.md,
-                      },
-                    ]}
-                  >
-                    <ThemedText>{habit.name}</ThemedText>
-
-                    <Ionicons
-                      name="trash-outline"
-                      size={22}
-                      color={theme.colors.muted}
-                    />
-                  </View>
-                </SwipeableRow>
-              ))}
-            </ScrollView>
+            <DraggableFlatList
+              data={habits}
+              keyExtractor={(item) => item.id}
+              onDragEnd={handleReorder}
+              renderItem={renderItem}
+              activationDistance={20} // IMPORTANT FIX
+            />
           </View>
 
           <Snackbar

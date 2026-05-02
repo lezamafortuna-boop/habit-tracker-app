@@ -9,7 +9,7 @@ export default function ThemedView({ style = undefined, ...props }) {
     <View
       style={[
         {
-          backgroundColor: theme.colors.bg,
+          backgroundColor: theme.mode === "light" ? "#ffffff" : theme.colors.bg,
           flex: 1,
         },
         style,
