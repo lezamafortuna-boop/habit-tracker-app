@@ -1,35 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "../context/ThemeContext";
-import { loadHabits } from "../storage/habits";
-import { calculateStreak, toggleHabitForToday } from "../storage/history";
+import { calculateStreak } from "../storage/history";
 import HabitItem from "./HabitItem";
 import ProgressBar from "./ProgressBar";
 import ThemedText from "./ThemedText";
 
-export default function HabitList({ history }) {
-  const [habits, setHabits] = useState([]);
+export default function HabitList({
+  habits,
+  completedToday,
+  history,
+  onToggle,
+}) {
   const { theme } = useTheme();
-
-  useEffect(() => {
-    async function loadData() {
-      const h = await loadHabits();
-      setHabits(h);
-    }
-    loadData();
-  }, []);
-
-  const today = new Date().toISOString().split("T")[0];
-  const todaysHabits = history[today] || [];
-
-  async function handleToggle(id) {
-    await toggleHabitForToday(id);
-    // parent screen reloads history
-  }
 
   // Daily progress
   const total = habits.length;
-  const completed = todaysHabits.length;
+  const completed = completedToday.length;
   const progress = total === 0 ? 0 : completed / total;
 
   // Weekly progress
@@ -80,8 +67,8 @@ export default function HabitList({ history }) {
             key={habit.id}
             habit={habit}
             streak={streak}
-            completed={todaysHabits.includes(habit.id)}
-            onToggle={handleToggle}
+            completed={completedToday.includes(habit.id)}
+            onToggle={() => onToggle(habit.id)}
           />
         );
       })}
@@ -92,16 +79,6 @@ export default function HabitList({ history }) {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
-  },
-  card: {
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-    borderWidth: 1,
   },
   empty: {
     marginTop: 10,
