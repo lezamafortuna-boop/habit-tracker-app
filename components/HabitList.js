@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useTheme } from "../context/ThemeContext";
 import { loadHabits } from "../storage/habits";
 import { calculateStreak, toggleHabitForToday } from "../storage/history";
@@ -76,23 +76,13 @@ export default function HabitList({ history }) {
         const streak = calculateStreak(history, habit.id);
 
         return (
-          <TouchableOpacity
+          <HabitItem
             key={habit.id}
-            style={[
-              styles.card,
-              {
-                backgroundColor: theme.colors.card,
-                borderColor: theme.colors.border,
-              },
-            ]}
-            onPress={() => handleToggle(habit.id)}
-          >
-            <HabitItem
-              name={habit.name}
-              completed={todaysHabits.includes(habit.id)}
-              streak={streak}
-            />
-          </TouchableOpacity>
+            habit={habit}
+            streak={streak}
+            completed={todaysHabits.includes(habit.id)}
+            onToggle={handleToggle}
+          />
         );
       })}
     </View>

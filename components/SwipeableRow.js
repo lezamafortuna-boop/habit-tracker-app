@@ -1,17 +1,46 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 import { useTheme } from "../context/ThemeContext";
 
 export default function SwipeableRow({ children, onDelete }) {
   const swipeRef = useRef(null);
   const { theme } = useTheme();
 
+  // --- One-time swipe hint animation ---
+  const translateX = useSharedValue(0);
+  const [hintShown, setHintShown] = useState(false);
+
+  useEffect(() => {
+    if (hintShown) return;
+
+    setHintShown(true);
+
+    translateX.value = withDelay(
+      300,
+      withSequence(
+        withTiming(-12, { duration: 150 }),
+        withTiming(0, { duration: 150 }),
+      ),
+    );
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
   const renderRightActions = () => (
     <View style={styles.actionContainer}>
       <TouchableOpacity
-        style={styles.deleteButton}
+        style={[styles.deleteButton, { backgroundColor: theme.colors.danger }]}
         onPress={() => {
           swipeRef.current?.close();
           onDelete();
@@ -28,7 +57,7 @@ export default function SwipeableRow({ children, onDelete }) {
       renderRightActions={renderRightActions}
       overshootRight={false}
     >
-      {children}
+      <Animated.View style={[animatedStyle]}>{children}</Animated.View>
     </Swipeable>
   );
 }
@@ -43,6 +72,5 @@ const styles = StyleSheet.create({
     width: 70,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "red", // ALWAYS visible in light mode
   },
 });

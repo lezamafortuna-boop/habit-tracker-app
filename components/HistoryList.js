@@ -9,7 +9,9 @@ export default function HistoryList({ history }) {
 
   return (
     <View style={styles.container}>
-      <ThemedText type="title">History</ThemedText>
+      <ThemedText type="title" style={styles.header}>
+        Daily History
+      </ThemedText>
 
       {dates.length === 0 && (
         <ThemedText style={styles.empty}>No history yet</ThemedText>
@@ -26,7 +28,7 @@ export default function HistoryList({ history }) {
             },
           ]}
         >
-          <ThemedText>{date}</ThemedText>
+          <ThemedText type="subtitle">{date}</ThemedText>
           <ThemedText>{history[date].length} completed</ThemedText>
         </View>
       ))}
@@ -37,6 +39,9 @@ export default function HistoryList({ history }) {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+  },
+  header: {
+    marginBottom: 10,
   },
   row: {
     padding: 14,
