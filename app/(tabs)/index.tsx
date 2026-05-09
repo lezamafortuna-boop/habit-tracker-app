@@ -1,8 +1,9 @@
-// Today Screen (Home)
+import { useFocusEffect } from "@react-navigation/native";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { RefreshControl, ScrollView, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import HabitList from "../../components/HabitList";
 import { loadHabits } from "../../storage/habits";
 import { loadHistory, saveHistory } from "../../storage/history";
@@ -22,28 +23,24 @@ export default function TodayScreen() {
     const h = await loadHabits();
     const hist = await loadHistory();
 
-    // Ensure today exists in history
-    if (!hist[today]) {
-      hist[today] = [];
-    }
+    if (!hist[today]) hist[today] = [];
 
     setHabits(h);
     setHistory(hist);
   }
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, []),
+  );
 
   async function toggleHabit(id: string) {
     const todayList = history[today] || [];
 
-    let updatedToday;
-    if (todayList.includes(id)) {
-      updatedToday = todayList.filter((h) => h !== id);
-    } else {
-      updatedToday = [...todayList, id];
-    }
+    const updatedToday = todayList.includes(id)
+      ? todayList.filter((h) => h !== id)
+      : [...todayList, id];
 
     const updatedHistory: History = {
       ...history,

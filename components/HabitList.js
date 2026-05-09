@@ -34,6 +34,27 @@ export default function HabitList({
   const weeklyTotal = habits.length * 7;
   const weeklyProgress = weeklyTotal === 0 ? 0 : weeklyCompleted / weeklyTotal;
 
+  console.log("HabitList received history:", history);
+
+  {
+    habits.map((habit) => {
+      const streak = calculateStreak(history, habit.id);
+
+      console.log("HabitList streak for", habit.name, ":", streak);
+      console.log("HabitList history:", history);
+
+      return (
+        <HabitItem
+          key={habit.id}
+          habit={habit}
+          streak={streak}
+          completed={completedToday.includes(habit.id)}
+          onToggle={() => onToggle(habit.id)}
+        />
+      );
+    });
+  }
+
   return (
     <View style={styles.container}>
       <ThemedText type="title">Today</ThemedText>
