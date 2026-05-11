@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./banner.png" alt="Habit Tracker App Banner" width="100%" />
+</p>
+
 🌱 Habit Tracker App
 A clean, modern habit‑tracking app built with React Native, Expo, and TypeScript.
 
